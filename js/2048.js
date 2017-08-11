@@ -42,8 +42,8 @@ function checkWin(){//获胜判定
 }
 function reSetPo(el,top,left,ranNum){//设置一个位置
 	lis[el].className="moved";
-	lis[el].style.top=top*100+"px";
-	lis[el].style.left=left*100+"px";
+	lis[el].style.top=top+"rem";
+	lis[el].style.left=left+"rem";
 	lis[el].style.backgroundColor=color[ranNum];
 	lis[el].innerText=ranNum;
 }
@@ -690,19 +690,19 @@ function mobileFun(event){
 	endJson.y=event.touches[0].clientY;
 	var xChange=endJson.x-startJson.x;
 	var yChange=endJson.y-startJson.y;
-	if(xChange>100&& Math.abs(xChange)>=Math.abs(yChange)){//右
+	if(xChange>50&& Math.abs(xChange)>=Math.abs(yChange)){//右
 		MoveFun(39);
 		mobileCanMove=false;
 	}
-	if(xChange<-100&&Math.abs(xChange)>=Math.abs(yChange)){//左
+	if(xChange<-50&&Math.abs(xChange)>=Math.abs(yChange)){//左
 		MoveFun(37);
 		mobileCanMove=false;
 	}
-	if(yChange>100&& Math.abs(yChange)>Math.abs(xChange)){//下
+	if(yChange>50&& Math.abs(yChange)>Math.abs(xChange)){//下
 		MoveFun(40);
 		mobileCanMove=false;
 	}
-	if(yChange<-100&&Math.abs(yChange)>Math.abs(xChange)){//上
+	if(yChange<-50&&Math.abs(yChange)>Math.abs(xChange)){//上
 		MoveFun(38);
 		mobileCanMove=false;
 	}
