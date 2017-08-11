@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			html, body{
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+			}
+			#allmap{
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=vWAu12o0as4ujuKtAbvfKxWuTw24bvbo"></script>
+	</head>
+	<body>
+		<div id="allmap"></div>
+	</body>
+	<script type="text/javascript">
+		var lat=120.404;
+		var lng=30.915;
+		var map = new BMap.Map("allmap");
+		
+		function showLocation(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            alert("Latitude : " + latitude + " Longitude: " + longitude);
+         }
+
+         function getLocation(){
+
+            if(navigator.geolocation){
+               navigator.geolocation.getCurrentPosition(showLocation);
+            }else{
+               alert("Sorry, browser does not support geolocation!");
+            }
+         }
+		
+		map.centerAndZoom(new BMap.Point(lat, lng), 11);
+		map.addControl(new BMap.MapTypeControl()); 
+		map.addControl(new BMap.GeolocationControl()); 
+		map.enableScrollWheelZoom(true);
+		
+		
+	</script>
+</html>

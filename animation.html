@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			@keyframes myani{
+			  0% {
+			    transform: rotate(0);
+			  }
+			  25% {
+			    transform: rotate(60deg);
+			  }
+			  50% {
+			    transform: rotate(40deg);
+			  }
+			  75% {
+			    transform: rotate(45deg);
+			  }
+			  100% {
+			    transform: rotate(45deg) translate(100px,100px);
+			  }
+			}
+			.box{
+				transform-origin: 0 0;
+				animation: myani 2s;
+				width: 100px;
+				height: 100px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			2222222222222
+		</div>
+	</body>
+</html>

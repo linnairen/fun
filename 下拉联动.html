@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/LocationData.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<select id="province">
+			<option value="-1">请选择</option>
+		</select>
+		<select id="city" style="display: none;">
+			<option value="-1">请选择</option>
+		</select>
+		<select id="district" style="display: none;">
+			<option value="-1">请选择</option>
+		</select>
+	</body>
+	<script type="text/javascript">
+		var province=document.getElementById("province");
+		var city=document.getElementById("city");
+		var district=document.getElementById("district");
+		for(var i in areaJson.province){
+			var op=document.createElement("option");
+			op.value=i;
+			op.innerText=areaJson.province[i];
+			province.appendChild(op);
+		}
+		province.onchange=function(){
+			city.innerHTML="<option value='-1'>请选择</option>";
+			district.innerHTML="<option value='-1'>请选择</option>";
+			var k=this.value;
+			district.style.display="none";
+			if(k==-1){
+				city.style.display="none";
+				return;
+			}
+			else{
+				city.style.display="inline-block";
+			}
+			for(var i in areaJson.city[k]){
+				var op=document.createElement("option");
+				op.value=i;
+				op.innerText=areaJson.city[k][i];
+				city.appendChild(op);
+			}
+		}
+		city.onchange=function(){
+			district.innerHTML="<option value='-1'>请选择</option>";
+			var k=this.value;
+			if(k==-1){
+				district.style.display="none";
+				return;
+			}
+			else{
+				if(areaJson.district[k]){
+					district.style.display="inline-block";
+				}
+			}
+			for(var i in areaJson.district[k]){
+				var op=document.createElement("option");
+				op.value=i;
+				op.innerText=areaJson.district[k][i];
+				district.appendChild(op);
+			}
+		}
+	</script>
+</html>

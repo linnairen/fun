@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			body{
+				text-align: center;
+			}
+			canvas{
+				border: 5px solid #000;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="myCv" width="200" height="200" class="c"></canvas>
+		<div><span id="speed">10</span></div>
+		<div>
+			<button id="BtnModel">死亡模式</button>
+			<button id="BtnAddSpeed">加速</button>
+			<button id="BtnCutSpeed">减速</button>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var myCanvas=document.getElementById("myCv");
+		var speedSpan=document.getElementById("speed");
+		var ctx=myCanvas.getContext("2d");
+		var CVwidth=200;//宽度
+		var jd=20;//精度 必须能被宽度整除//速度   1-100
+		var moveTime=1000;//默认时间
+		var interKey;
+		var snakeDire=2;
+		Object.defineProperty(window,"moveSpeed",{
+			get:function(){
+				return Number(speedSpan.innerHTML);
+			},
+			set:function(value){
+				speedSpan.innerHTML=value;
+			}
+		});
+		moveSpeed=5;
+		var DataMain=[];
+		function drawImg(){//刷新游戏区域
+			var imgData=ctx.createImageData(CVwidth,CVwidth);
+			for (let i=0,j=0;i<imgData.data.length;i+=4,j++){
+				var x=parseInt(parseInt(j/CVwidth)/(CVwidth/jd));
+				var y=parseInt((j%CVwidth)/(CVwidth/jd));
+				imgData.data[i+0]=DataMain[x][y].r;
+				imgData.data[i+1]=DataMain[x][y].g;
+				imgData.data[i+2]=DataMain[x][y].b;
+				imgData.data[i+3]=DataMain[x][y].a;
+			}
+			ctx.putImageData(imgData,0,0);
+		}
+		function Pos(x,y){
+			this.x=x>=0?x:1;
+			this.y=y>=0?y:1;
+			this.Same=function(pos){
+				return (this.x==pos.x&&this.y==pos.y);
+			}
+			var that=this;
+			Object.defineProperty(that,"Same",{
+				enumerable:false
+			})
+		}
+		var Snake=[new Pos(1,1)];
+		var SnakeColor={
+			'r':0,
+			'g':255,
+			'b':0,
+			'a':255
+		};
+		var NormalColor={
+			'r':255,
+			'g':255,
+			'b':255,
+			'a':255
+		};
+		var RicePo=new Pos(0,0);
+		var RiceColor={
+			'r':0,
+			'g':0,
+			'b':255,
+			'a':255
+		};
+		function ranPo(){//产生新的Rice位置
+			var ranNum=Math.floor(Math.random()*jd*jd);
+			var ranX=ranNum%jd;
+			var ranY=Math.floor(ranNum/jd);
+			let NewPo=new Pos(ranX,ranY);
+			for(let i=0;i<Snake.length;i++){
+				if(NewPo.Same(Snake[i])){
+					return ranPo();
+				}
+			}
+			RicePo=NewPo;
+		}
+		/***
+		 * 修改压面数据
+		 */
+		function changeImgData(){
+			for(let i=0;i<jd;i++){
+				DataMain[i]=[];
+				for(let j=0;j<jd;j++){
+					DataMain[i][j]=NormalColor;
+				}
+			}
+			for(let i=0;i<Snake.length;i++){
+				DataMain[Snake[i].y][Snake[i].x]=SnakeColor;
+			}
+			DataMain[RicePo.y][RicePo.x]=RiceColor;
+			drawImg();
+		}
+		function moveFun(dire,speed){//dire 方向 1 3 0 2 上下左右
+			interKey=setInterval(function(){
+				var Speed=speed||1;
+				let headPo=new Pos(Snake[0].x,Snake[0].y);
+				var snakeKey="x";
+				if(dire==1||dire==3){
+					snakeKey="y";
+				}
+				if(dire==1||dire==0){
+					Speed=-Speed;
+				}
+				if(Snake[0][snakeKey]+Speed>jd-1||Snake[0][snakeKey]+Speed<0){
+					headPo[snakeKey]=jd-1-Snake[0][snakeKey];
+				}
+				else{
+					headPo[snakeKey]+=Speed;
+				}
+				if(headPo.Same(RicePo)){
+					Snake[Snake.length]=new Pos(Snake[Snake.length-1].x,Snake[Snake.length-1].y);
+					ranPo();
+				}
+				nextMove(0,headPo.x,headPo.y);
+			},(moveTime/moveSpeed));
+		}
+		
+		function nextMove(num,x,y){
+			var numX=Snake[num].x;
+			var numY=Snake[num].y;
+			Snake[num].x=x;
+			Snake[num].y=y;
+			changeImgData();
+			setTimeout(function(){
+				let numN=num+1;
+				if(Snake[numN]){
+					nextMove(numN,numX,numY);
+				}
+			},(moveTime/moveSpeed)/Snake.length);
+		}
+		
+		document.documentElement.onkeydown=function(){
+			var keyCode=event.keyCode-37;
+			if(keyCode>=0&&keyCode<=4){
+				if(Math.abs(keyCode-snakeDire)==2||Math.abs(keyCode-snakeDire)==0){
+					return;
+				}
+				clearInterval(interKey);
+				moveFun(keyCode);
+				snakeDire=keyCode;
+			}
+		}
+		ranPo();
+		changeImgData();
+		moveFun(0);
+	</script>
+</html>

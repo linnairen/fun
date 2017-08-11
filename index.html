@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				color: #fff;
+				font-size: 14px;
+			}
+			li{
+				list-style: none;
+			}
+			.game{
+				overflow: hidden;
+			}
+			.blood:before{
+				content: "我的血量：";
+			}
+			.attack:before{
+				content: "我的攻击力：";
+			}
+			.defense:before{
+				content: "我的防御力：";
+			}
+			.power:before{
+				content: "我的能量：";
+			}
+			.canBeAttack:before{
+				content: "我能不能被攻击：";
+			}
+			li:before{
+				width: 150px;
+				display: inline-block;
+			}
+			.Blue{
+				margin: 30px;
+				float: left;
+			}
+			.Blue ul{
+				background: #00f;
+				height: 180px;
+				width: 180px;
+				padding: 10px;
+			}
+			.Red{
+				float: right;
+				margin: 30px;
+			}
+			.Red ul{
+				background: #f00;
+				height: 180px;
+				width: 180px;
+				padding: 10px;
+			}
+			.Blue ul,.Red ul{
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			.Blue .Cur,.Red .Cur{
+				padding: 5px;
+				border: 5px solid #0f0;
+			}
+			.Cur:after{
+				content: "现在轮到我攻击";
+				color: #999999;
+			}
+			#errMessage{
+				color: #000000;
+			}
+			#mouseMessage{
+				position: fixed;
+				color: #000;
+				width: 150px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="game">
+			<div class="Blue"></div>
+			<div class="Red"></div>
+		</div>
+		<div id="errMessage">
+			
+		</div>
+		<div id="mouseMessage">
+			正在选择优先攻击对象
+		</div>
+		<script src="js/fun.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var hero_GL=new hero(70,3,0,600,60,40,2,"hero_GL");
+			var hero_AX=new hero(90,4,0,450,50,30,2,"hero_AX");
+			hero_GL.setHero("Blue");
+			hero_AX.setHero("Red");
+			var mouseMessage=document.getElementById("mouseMessage");
+			document.documentElement.onmousemove=function(){
+				mouseMessage.style.top=event.clientY+30+"px";
+				mouseMessage.style.left=event.clientX+30+"px";
+				if(document.getElementsByClassName("Cur").length>0){
+					var tar=event.target;
+					if(tar.className.indexOf("Cur")==-1){
+						mouseMessage.innerText="正在选择目标";
+					}
+					else{
+						mouseMessage.innerText="不可选此目标";
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

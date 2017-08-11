@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			.moveBox{
+				background: #eee;
+				height: 200px;
+				margin: 0 auto;
+				width: 300px;
+				position: relative;
+				user-select: none;
+			}
+			.moveItem{
+				width: 50px;
+				height: 50px;
+				background: #666;
+				cursor: pointer;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="moveBox">
+			<div class="moveItem">
+				
+			</div>
+			<div class="moveItem" style="left: 100px;">
+				
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		document.body.onload=function(){
+			var moveBox=document.getElementsByClassName("moveBox")[0];
+			var moveItems=moveBox.getElementsByClassName("moveItem");
+			var moCha=0.01;
+			var itemWeight=10;
+			for(var itemNum=0;itemNum<moveItems.length;itemNum++){
+				Object.defineProperty(moveItems[itemNum],"x",{
+					set:function(value){
+						if(typeof(value)!="number"){
+							throw new TypeError;
+							return;
+						}
+						if(this.parentNode.offsetWidth<(value+this.offsetWidth)){
+							this.style.left=this.parentNode.offsetWidth-this.offsetWidth+"px";
+						}
+						else if(value<0){
+							this.style.left=0;
+						}
+						else{
+							this.style.left=value+"px";
+						}
+					},
+					get:function(){
+						return this.offsetLeft;
+					}
+				});
+				Object.defineProperty(moveItems[itemNum],"y",{
+					set:function(value){
+						if(typeof(value)!="number"){
+							throw new TypeError;
+							return;
+						}
+						if(this.parentNode.offsetHeight<(value+this.offsetHeight)){
+							this.style.top=this.parentNode.offsetHeight-this.offsetHeight+"px";
+						}
+						else if(value<0){
+							this.style.top=0;
+						}
+						else{
+							this.style.top=value+"px";
+						}
+					},
+					get:function(){
+						return this.offsetTop;
+					}
+				});
+				moveItems[itemNum].canMove=false;
+				moveItems[itemNum].xSpeed=0;
+				moveItems[itemNum].ySpeed=0;
+				moveItems[itemNum].addEventListener("mousedown",function(){
+					this.canMove=true;
+					var rectt=moveBox.getBoundingClientRect();
+					this.moveArr=[
+						{
+							"x":event.clientX-rectt.left,
+							"y":event.clientY-rectt.top,
+							"time":Date.now()
+						}
+					];
+				});
+			}
+			moveBox.addEventListener("mousemove",function(){
+				var that;
+				for(var i=0;i<moveItems.length;i++){
+					if(moveItems[i].canMove){
+						that=moveItems[i];
+						break;
+					}
+				}
+				if(that){
+					var rectt=moveBox.getBoundingClientRect();
+					that.x+=event.clientX-rectt.left-that.moveArr[that.moveArr.length-1].x;
+					that.y+=event.clientY-rectt.top-that.moveArr[that.moveArr.length-1].y;
+					that.moveArr[that.moveArr.length]={
+						"x":event.clientX-rectt.left,
+						"y":event.clientY-rectt.top,
+						"time":Date.now()
+					};
+				}
+			});
+			function moveOn(that){
+				var itemArr=[];
+				for(var i=0;i<moveItems.length;i++){
+					if(moveItems[i]!=that){
+						itemArr[itemArr.length]=moveItems[i];
+						break;
+					}
+				}
+				var animateKey=setInterval(function(){
+					//以下用于撞墙回弹速度
+					if(that.x<=0||that.x>=that.parentNode.offsetWidth-that.offsetWidth){
+						that.xSpeed=that.xSpeed>0?-1*itemWeight*moCha-that.xSpeed:itemWeight*moCha-that.xSpeed;
+					}
+					if(that.y<=0||that.y>=that.parentNode.offsetHeight-that.offsetHeight){
+						that.ySpeed=that.ySpeed>0?-1*itemWeight*moCha-that.ySpeed:itemWeight*moCha-that.ySpeed;
+					}
+					//以下用于跳出循环
+					if(that.xSpeed==0||that.ySpeed==0){
+						clearInterval(animateKey);
+					}
+					//以下为变化后的量
+					var xChange=that.xSpeed/200;
+					var yChange=that.ySpeed/200;
+					var xT=that.x+xChange;
+					var yT=that.y+yChange;
+					//以下用于判断是否发生碰撞
+					for(var j=0;j<itemArr.length;j++){
+						//以下为变化后的量
+						var xJ=itemArr[j].x+itemArr[j].xSpeed/200;
+						var yJ=itemArr[j].y+itemArr[j].ySpeed/200;
+						if((xT<xJ+itemArr[j].offsetWidth)&&(xT>xJ-that.offsetWidth)&&(yT<yJ+itemArr[j].offsetHeight)&&(yT>yJ-that.offsetHeight)){
+							var subX=Math.abs(that.x-itemArr[j].x);
+							var subY=Math.abs(that.y-itemArr[j].y);
+							var distanceX=subX-that.offsetWidth;
+							var distanceY=subY-that.offsetHeight;
+							var xCloseTime=(that.xSpeed-itemArr[j].xSpeed)>0?distanceX/(that.xSpeed-itemArr[j].xSpeed):0;
+							var yCloseTime=(that.ySpeed-itemArr[j].ySpeed)>0?distanceY/(that.ySpeed-itemArr[j].ySpeed):0;
+							if(xCloseTime>=yCloseTime){
+								that.ySpeed=that.ySpeed>0?-1*itemWeight*moCha-that.ySpeed:itemWeight*moCha-that.ySpeed;
+							}
+							else{
+								that.xSpeed=that.xSpeed>0?-1*itemWeight*moCha-that.xSpeed:itemWeight*moCha-that.xSpeed;
+							}
+						}
+					}
+					that.x+=that.xSpeed/200;
+					that.y+=that.ySpeed/200;
+					if(Math.abs(that.xSpeed)-itemWeight*moCha>0&&Math.abs(that.ySpeed)-itemWeight*moCha>0){
+						that.xSpeed-=that.xSpeed>0?itemWeight*moCha:-1*itemWeight*moCha;
+						that.ySpeed-=that.ySpeed>0?itemWeight*moCha:-1*itemWeight*moCha;
+					}
+					else{
+						that.xSpeed=0;
+						that.ySpeed=0;
+					}
+				},5);
+			}
+			document.documentElement.addEventListener("mouseup",function(){
+				var that;
+				for(var i=0;i<moveItems.length;i++){
+					if(moveItems[i].canMove){
+						that=moveItems[i];
+						break;
+					}
+				}
+				if(that){
+					that.canMove=false;
+					if(that.moveArr.length>=2){
+						var startPo=that.moveArr[that.moveArr.length-2];
+						var lastPo=that.moveArr[that.moveArr.length-1];
+						var time=(lastPo.time-startPo.time)/1000;
+						that.xSpeed=(lastPo.x-startPo.x)/time;
+						that.ySpeed=(lastPo.y-startPo.y)/time;
+						moveOn(that);
+					}
+				}
+			});
+		}
+	</script>
+</html>

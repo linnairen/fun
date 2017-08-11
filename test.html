@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#aaa{
+				height: 100px;
+				width: 100px;
+				background: #f00;
+			}
+		</style>
+	</head>
+	<body>
+		<div  id="box" style="width: 100px;height: 100px; background: #000000;"></div>
+		<div id="aaa">
+			
+		</div>
+		<script type="text/javascript">
+			var box=document.getElementById("box");
+			Object.defineProperty(box,"width",{
+				set:function(value){
+					var widthText=value+"px";
+					box.style.width=widthText;
+				}
+			});
+			Object.defineProperty(window,"boxHeight",{
+				set:function(value){
+					var heightText=value+"px";
+					box.style.height=heightText;
+				}
+			});
+			console.log(getComputedStyle(document.getElementById("aaa"),null)["width"]);
+		</script>
+	</body>
+</html>

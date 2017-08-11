@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			body{
+				width: 100%;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var box=document.createElement("canvas");
+			function simpleStyle(el,styles){
+				for(let i in styles){
+					el.style[i]=styles[i];
+				}
+			}
+			simpleStyle(box,{
+				'width':'400px',
+				'height':'400px',
+				'border':'5px solid #eee'
+			});
+			document.body.appendChild(box);
+			var ctx=box.getContext("2d");
+			ctx.fillStyle="#0000FF";
+			ctx.fillRect(0,0,100,100);
+		</script>
+	</body>
+</html>

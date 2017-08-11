@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			li{
+				list-style: none;
+			}
+			.box{
+				width: 400px;
+				background: #eee;
+				margin: 200px auto 0;
+			}
+			.box ul{
+				height: 100px;
+				position: relative;
+			}
+			.box li{
+				position: absolute;
+				width: 50px;
+				background: #0000FF;
+				border: 1px solid #000000;
+				box-sizing: border-box;
+				height: 100px;
+				top: 0;
+				left: 175px;
+				transform-origin: 50% 200%;
+				transition: all 1s;
+			}
+			.box li:hover{
+				z-index: 21 !important;
+				background: #88e;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<ul>
+				<li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>00</li><li>7</li><li>8</li>
+			</ul>
+		</div>
+		<button class="btnOn">开</button>
+		<button class="btnOff">关</button>
+		<script type="text/javascript">
+			function qS(str,all){
+				return document["querySelector"+(all?"All":"")](str);
+			}
+			
+			function setStyleList(el,obj){
+				for(var i in obj){
+					el.style[i]=obj[i];
+				}
+			}
+			
+			var box=document.getElementsByClassName('box')[0];
+			var lis=box.getElementsByTagName("li");
+			var bigOn=false;
+			var smallOn=false;
+			var CurOrder=[0,1,2,3,4,5,6,7];
+			
+			function rotateBig(){
+				if(!bigOn){
+					if(!smallOn){
+						for(var i=0;i<lis.length;i++){
+							setStyleList(lis[CurOrder[i]],{
+								'transformOrigin':'50% 200%',
+								'transform':'rotate('+(35-10*i)+'deg)',
+								'zIndex':20-i
+							});
+						}
+					}
+					else{
+						rotateOff();
+						setTimeout(function(){
+							bigOn=false;
+							rotateBig();
+						},1000);
+					}
+					bigOn=true;
+				}
+			}
+			function rotateOff(){
+				if(bigOn||smallOn){
+					for(var i=0;i<lis.length;i++){
+						setStyleList(lis[CurOrder[i]],{
+							'transform':'rotate(0deg)'
+						});
+					}
+					bigOn=false;
+					smallOn=false;
+				}
+			}
+			function rotateSmall(){
+				if(!smallOn){
+					if(!bigOn){
+						for(var i=0;i<lis.length;i++){
+							setStyleList(lis[CurOrder[i]],{
+								'transformOrigin':'30% 100%',
+								'transform':'rotate('+(35-10*i)+'deg)'
+							});
+						}
+					}
+					else{
+						rotateOff();
+						setTimeout(function(){
+							smallOn=false;
+							rotateSmall();
+						},1000);
+					}
+					smallOn=true;
+				}
+				else{
+					rotateOff();
+				}
+			}
+			qS(".btnOn").addEventListener('click',rotateBig);
+			qS(".btnOff").addEventListener('click',rotateOff);
+			lis[CurOrder[0]].addEventListener('click',rotateSmall);
+			
+			for(let j=0;j<lis.length;j++){
+				lis[j].addEventListener("click",function(){
+					if(j!=CurOrder[0]){
+						lis[CurOrder[0]].removeEventListener('click',rotateSmall);
+						this.addEventListener('click',rotateSmall);
+						let choosed=CurOrder[j];
+						CurOrder[j]=CurOrder[0];
+						CurOrder[0]=choosed;
+						for(let i=0;i<lis.length;i++){
+							if(CurOrder[i]==CurOrder[0]){
+								setStyleList(lis[CurOrder[i]],{
+									'transform':'rotate(0deg)',
+									'margin':'-200px 0 0 -200px',
+									'opcity':'0',
+									'zIndex':20-i
+								});
+								setTimeout(function(){
+									setStyleList(lis[CurOrder[i]],{
+										'margin':'',
+										'opcity':'1',
+									});
+								},1000)
+							}
+							else{
+								setStyleList(lis[CurOrder[i]],{
+									'transform':'rotate(0deg)',
+									'zIndex':20-i
+								});
+							}
+						}
+						bigOn=false;
+						mallOn=false;
+						console.log(CurOrder);
+					}
+				})
+			}
+			
+			rotateBig();
+		</script>
+	</body>
+</html>

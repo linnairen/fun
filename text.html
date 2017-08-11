@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+			}
+			html{
+				font-size: 18px;
+			}
+			body{
+				font-size: 18px;
+			}
+			li{
+				list-style: none;
+			}
+			#box{
+				position: fixed;
+				background: #eee;
+				border: 1px solid #999;
+			}
+			#box li{
+				position: relative;
+				padding: 5px 15px;
+				cursor: pointer;
+				height: 20px;
+			}
+			#box li:hover{
+				background: #aaa;
+			}
+			#box ul{
+				background: #eee;
+				border: 1px solid #999;
+				position: absolute;
+				top: 0;
+				left: 100%;
+				margin-left: -10px;
+				display: none;
+			}
+			#box span{
+				display: block;
+			}
+			#box i{
+				position: absolute;
+				right: 5px;
+				top: 10px;
+				width: 0;
+				height: 0;
+				border: 5px  solid #000;
+				border-color: #000 #000 transparent transparent;
+				transform: rotate(45deg);
+			}
+			.secoundLevelUl{
+				z-index: 2;
+			}
+			.thirdLevelUl{
+				z-index: 3;
+			}
+			#box .firstLevel:hover .secoundLevelUl {
+				display: block;
+			}
+			#box .secoundLevel:hover .thirdLevelUl {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var rem=18;
+			var menuWidth=120;
+			var liHeight=30;
+			var rightMenu=[
+				{"name":"一级菜单1","list":""},
+				{"name":"一级菜单2","list":[
+					{"name":"二级菜单1","list":""},
+					{"name":"二级菜单22","list":""}
+				]},
+				{"name":"一级菜单3","list":""},
+				{"name":"一级菜单4","list":[
+					{"name":"二级菜单333","list":""},
+					{"name":"二级菜单4444","list":[
+						{"name":"三级菜单1","list":""},
+						{"name":"三级菜单2","list":""},
+						{"name":"三级菜单3","list":""},
+						{"name":"三级菜单4","list":""}
+					]},
+					{"name":"二级菜单55555","list":""}
+				]}
+			];
+			function RightMenuRun(arr,top,left){
+				var htmlWidth=document.documentElement.clientWidth;
+				var htmlHeight=document.documentElement.clientHeight;
+				document.getElementById("box")&&document.body.removeChild(document.getElementById("box"));
+				var ul=document.createElement("ul");
+				ul.id="box";
+				top=top+arr.length*liHeight<htmlHeight?top:htmlHeight-arr.length*liHeight;
+				ul.style.top=top+"px";
+				ul.style.left=left+"px";
+				for(var i=0;i<arr.length;i++){
+					var li=document.createElement("li");
+					li.className="firstLevel";
+					var span=document.createElement("span");
+					span.innerText=arr[i].name;
+					span.style.width=arr[i].name.length+"rem";
+					li.appendChild(span);
+					if(arr[i].list!=""){
+						var eI=document.createElement("i");
+						li.appendChild(eI);
+						var ul1=document.createElement("ul");
+						ul1.className="secoundLevelUl";
+						var top1=top+(i+arr[i].list.length)*liHeight<htmlHeight?false:htmlHeight-(i+arr[i].list.length)*liHeight-top;//等于 false或者超出部分的负值
+						top1&&(ul1.style.top=top1+"px");
+						var Max_width=0;
+						for(var j=0;j<arr[i].list.length;j++){
+							var li1=document.createElement("li");
+							li1.className="secoundLevel";
+							var span1=document.createElement("span");
+							span1.innerText=arr[i].list[j].name;
+							span1.style.width=arr[i].list[j].name.length+"rem";
+							(Max_width<arr[i].list[j].name.length*rem)&&(Max_width=arr[i].list[j].name.length*rem);
+							li1.appendChild(span1);
+							if(arr[i].list[j].list!=""){
+								var eI1=document.createElement("i");
+								li1.appendChild(eI1);
+								var ul2=document.createElement("ul");
+								ul2.className="thirdLevelUl";
+								var top11=top1?top+i*liHeight+top1:top+i*liHeight;
+								var top2=top11+(j+arr[i].list[j].list.length)*liHeight<htmlHeight?false:htmlHeight-top11-(j+arr[i].list[j].list.length)*liHeight;//等于 false或者超出部分的负值
+								top2&&(ul2.style.top=top2+"px");
+								var Max_width1=0;
+								for(var k=0;k<arr[i].list[j].list.length;k++){
+									var li2=document.createElement("li");
+									li2.className="thirdLevel";
+									var span2=document.createElement("span");
+									span2.innerText=arr[i].list[j].list[k].name;
+									span2.style.width=arr[i].list[j].list[k].name.length+"rem";
+									(Max_width1<arr[i].list[j].list[k].name.length*rem)&&(Max_width1=arr[i].list[j].list[k].name.length*rem);
+									li2.appendChild(span2);
+									if(arr[i].list[j].list[k].list!=""){
+										
+									}
+									ul2.appendChild(li2);
+								}
+								var left2=(left+Max_width1+menuWidth+Max_width+50<htmlWidth||(left+menuWidth+Max_width>htmlWidth&&left+Max_width1<htmlWidth))?false:-Max_width1-10;
+								left2&&(ul2.style.left=left2+"px");
+								li1.appendChild(ul2);
+							}
+							ul1.appendChild(li1);
+						}
+						var left1=left+menuWidth+Max_width<htmlWidth?false:-Max_width-20;
+						left1&&(ul1.style.left=left1+"px");
+						li.appendChild(ul1);
+					}
+					ul.appendChild(li);
+				}
+				document.body.appendChild(ul);
+			}
+			
+			document.documentElement.oncontextmenu=function(){
+				var htmlWidth=document.documentElement.clientWidth;
+				var htmlHeight=document.documentElement.clientHeight;
+				var event=event||window.event;
+				var menuLeft=event.clientX<htmlWidth-menuWidth?event.clientX:htmlWidth-menuWidth;
+				var menuTop=event.clientY;
+//				var menuLeft1=menuLeft+120<htmlWidth-90?100:-110;
+//				var menuTop1=event.clientY;
+//				var menuLeft2=menuLeft+menuLeft1+120<htmlWidth-90?100:-110;
+//				var menuTop2=event.clientY;
+				RightMenuRun(rightMenu,menuTop,menuLeft);
+				return false;
+			}
+			
+			document.documentElement.addEventListener("click",function(){
+				document.getElementById("box")&&document.body.removeChild(document.getElementById("box"));
+			});
+		</script>
+	</body>
+</html>
