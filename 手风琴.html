@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			li{
+				list-style: none;
+			}
+			input{
+				display: none;
+			}
+			.sfq{
+				width: 100px;
+				margin: 0 auto;
+			}
+			.sfq li{
+				width: 100%;
+			}
+			.sfq label{
+				color: #00f;
+				display: block;
+				border: 1px solid #00f;
+			}
+			.sfq p{
+				width: 100%;
+				display: none;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				border: 1px solid #000;
+				transition: all 1s;
+				box-sizing: border-box;
+			}
+			.sfq input:checked + p{
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<ul class="sfq">
+			<li>
+				<label for="s1">1111111</label><input type="radio" name="shoufengqing" checked="checked" id="s1" />
+				<p>哈哈哈哈。。。。。。。。。。。。。。。。。。。。。。。。。</p>
+			</li>
+			<li>
+				<label for="s2">2222222</label><input type="radio" name="shoufengqing" id="s2" />
+				<p>呼呼呼呼。。。。。。。。。。。。。。。。。。。。。。。。。。。。</p>
+			</li>
+			<li>
+				<label for="s3">3333333</label><input type="radio" name="shoufengqing" id="s3" />
+				<p>嘿嘿嘿嘿。。。。。。。。。。。。。。。。。。。。。。。。。。。。</p>
+			</li>
+			<li>
+				<label for="s4">4444444</label><input type="radio" name="shoufengqing" id="s4" />
+				<p>咻咻咻咻。。。。。。。。。。。。。。。。。。。。。。。。。。。。。</p>
+			</li>
+		</ul>
+	</body>
+</html>

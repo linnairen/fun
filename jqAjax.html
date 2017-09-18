@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<p class="box"></p>
+		<button class="btn">点我</button>
+	</body>
+	<script type="text/javascript">
+		$.ajax({
+			type:"get",
+			url:"https://api.douban.com/v2/book/1220562",
+			dataType:"jsonp",
+			success:function(data){
+				console.log(data);
+				$('.box').html(data.summary);
+			},
+			error:function(a,b,c){
+				console.log(a,b,c);
+			},
+			async:true
+		});
+	</script>
+</html>
