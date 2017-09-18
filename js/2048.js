@@ -707,6 +707,6 @@ function mobileFun(event){
 		mobileCanMove=false;
 	}
 }
-document.documentElement.addEventListener("touchmove",function(){mobileFun(event);});
+document.documentElement.addEventListener("touchmove",function(){mobileFun(event);event.preventDefault();});
 document.documentElement.addEventListener("touchend",function(){mobileCanMove=true;});
 ranFun();
